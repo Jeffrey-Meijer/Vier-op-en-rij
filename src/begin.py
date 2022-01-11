@@ -221,7 +221,12 @@ def in_a_row_n_northeast(ch, r_start, c_start, a, n):
 
 class Player:
   def __init__(self, ox, tbt, ply):
-    pass
+    """
+    Constructs the player with the given checker, the tie breaking type and ply
+    """
+    self.ox = ox
+    self.tbt = tbt
+    self.ply = ply
   def __repr__(self):
     pass
 
