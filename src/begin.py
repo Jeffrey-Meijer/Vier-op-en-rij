@@ -231,6 +231,18 @@ class Player:
     pass
 
   def opp_ch(self):
-    pass
+    """
+    Returns the opposite stone for the opponent
+    If the player has the "X" stone then the opponent will have the 'O' stone and vice verca
+    """
+    if self.ox == 'X':
+      return 'O'
+    return 'X'
   def score_board(self, b):
     pass
+
+
+# opp_sh tests
+p = Player('X', 'LEFT', 3)
+assert p.opp_ch() == 'O'
+assert Player('O', 'LEFT', 0).opp_ch() == 'X'
