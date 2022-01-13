@@ -243,11 +243,30 @@ class Player:
     if self.ox == 'X':
       return 'O'
     return 'X'
-  def score_board(self, b):
-    pass
+
+  def score_board(self, b) -> float:
+    """
+    Returns a float bases on what player is winning or has won.
+    100 if won by the calling player object, 50 if no one has won and 0 if the opponent has won.
+    """
+    if b.wins_for(self.ox):
+      return 100
+    if b.wins_for(self.opp_ch()):
+      return 0
+    
+    return 50
 
 
 # opp_sh tests
 p = Player('X', 'LEFT', 3)
 assert p.opp_ch() == 'O'
-assert Player('O', 'LEFT', 0).opp_ch() == 'X'assert Player('O', 'LEFT', 0).opp_ch() == 'X'
+assert Player('O', 'LEFT', 0).opp_ch() == 'X'
+
+# score_board tests
+b = Board(7, 6)
+b.set_board('01020305')
+print(b)
+p = Player('X', 'LEFT', 0)
+assert p.score_board(b) == 100.0
+assert Player('O', 'LEFT', 0).score_board(b) == 0.0
+assert Player('O', 'LEFT', 0).score_board(Board(7, 6)) == 50.0
