@@ -227,8 +227,13 @@ class Player:
     self.ox = ox
     self.tbt = tbt
     self.ply = ply
+
   def __repr__(self):
-    pass
+    """
+    Returns the representation of the Player object.
+    Shows the checker it uses, the choice strategy(tbt) and the ply
+    """
+    return f"Player: ox = {self.ox}, tbt = {self.tbt}, ply = {self.ply}"
 
   def opp_ch(self):
     """
@@ -245,4 +250,4 @@ class Player:
 # opp_sh tests
 p = Player('X', 'LEFT', 3)
 assert p.opp_ch() == 'O'
-assert Player('O', 'LEFT', 0).opp_ch() == 'X'
+assert Player('O', 'LEFT', 0).opp_ch() == 'X'assert Player('O', 'LEFT', 0).opp_ch() == 'X'
