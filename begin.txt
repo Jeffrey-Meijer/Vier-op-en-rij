@@ -1,0 +1,25 @@
+Mirco en Ik hebben ervoor gekozen om de functies die wij maken zo gelijk mogelijk te verdelen.
+Hierdoor zorgen we ervoor dat wij beide aan het project kunnen werken en er ook ongeveer even lang mee bezig zijn.
+
+Om ervoor te zorgen dat we altijd op onze eigen tempo en tijden kunnen werken doen wij deze samenwerking via Github.
+Deze keuze vonden wij het slimst zodat we ook direct een samenwerking via Github kunnen ervaren en hiervan leren.
+
+Functie __init__:
+Deze functie maakt de speler aan en geeft zet welke checker hij is, welke tiebreaker type hij heeft en
+hoeveel ply's hij vooruit kan kijken
+
+Functie __repr__:
+Geeft de representatie terug van de Player class.
+Specifieker geeft hij het volgende terug:
+- De checker die word gebruikt
+- de keuze strategie
+- de ply's
+
+Functie opp_sh:
+Geeft de andere speler zijn checker terug.
+Als je dus de 'X' speler opgeeft krijg je de 'O' terug en andersom.
+
+Functie score_board:
+Geeft een score terug op basis van wie wint.
+Als de player object wint dan krijg je 100 punten, 
+als je gelijk speelt 50 punten en als je verlies 0 punten.
