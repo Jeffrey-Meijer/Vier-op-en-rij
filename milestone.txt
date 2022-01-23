@@ -1,0 +1,35 @@
+Net zoals vorige week hebben Mirco en ik ervoor gekozen om de functies die gemaakt moesten worden te verdelen.
+
+Deze week hebben wij de volgende functies toegevoegd:
+
+Class Board:
+  - copy()
+
+Class Player:
+  - Tiebreak_move()
+  - scores_for
+
+Functie copy:
+Kopieert het bord en geeft deze terug.
+Hier is voor gekozen om zo gemakkelijk mogelijk de zetten voor scores_for te simuleren.
+Als hij namelijk klaar was met een kolom dan slaat hij gewoon de scores op en maakt een nieuwe kopie van het bord aan.
+
+Functie Tiebreak_move:
+Geeft de beste zet terug op basis van de strategie die gekozen is door de speler.
+De scores array wordt door de helft gedaan en dan op basis van keuze pakt hij de grootste van de linker of rechter kant.
+
+Bijvoorbeeld als de strategie van de speler 'LEFT' was dan pakt hij het grootste getal van de linker kant.
+Als de strategie random is dan pakt hij uiteraad een willekeurige gekozen hoogste score.
+
+Functie scores_for:
+Geeft een lijst met scores terug voor elk kolom.
+Dit doet hij door moves te simuleren op een kopie van het bord van zowel zichzelf als die van de tegenstanders.
+
+Uit deze moves kunnen de volgende waarden terug komen:
+- 0.0 (De speler verliest)
+- 50.0 (De speler wint niet maar verliest ook niet)
+- 100.0 (De speler wint)
+
+Doormiddel van deze waarden kan de AI in de volgende functie (next_move) de beste move maken.
+
+
