@@ -45,6 +45,14 @@ class Board:
       """
       self.data = [[' ']*self.width for row in range(self.height)]
 
+    def copy(self):
+      """
+      Copies the board
+      """
+      newb = Board(self.width, self.height)
+      newb.data = [col[:] for col in self.data]
+      return newb
+
     def set_board(self, move_string):
       """
         Accepts a string of columns and places
@@ -295,6 +303,35 @@ class Player:
               break
       
     return best_index
+
+  def scores_for(self, b):
+    """
+    Returns a list with the same amount of elements as the board's width.
+    This list contains the moves it considers to be the best based on the amount of look ahead (self.ply)
+    """
+    scores = [50.0] * b.width
+    
+    for x in range(b.width):
+      db = b.copy()
+      if not db.allows_move(x):
+        scores[x] = -1.0
+      elif db.wins_for(self.ox):
+        scores[x] = 100.0
+      elif db.wins_for(self.opp_ch()):
+        scores[x] = 0.0
+      if self.ply == 0:
+        scores[x] = 50.0
+      elif self.ply > 0:
+        db.add_move(x, self.ox)
+        if db.wins_for(self.ox):
+          scores[x] = 100.0
+        else:
+          op = Player(self.opp_ch(), self.tbt, self.ply-1)
+          op_scores = op.scores_for(db)
+          op_choice = op.tiebreak_move(op_scores)
+          scores[x] = 100.0 - op_scores[op_choice]
+        db.del_move(x)
+    return scores
     
 # opp_sh tests
 p = Player('X', 'LEFT', 3)
@@ -326,4 +363,33 @@ scores_o = [50, 100, 50, 50, 100, 50, 50]
 
 assert p_left.tiebreak_move(scores_x) == 0 or 5
 assert p_right.tiebreak_move(scores_o) == 4 or 6
+
+# scores_for tests
+print("Scores_for tests")
+b = Board(7, 6)
+b.set_board('1211244445')
+print(b)
+
+# 0-ply lookahead ziet geen bedreigingen
+assert Player('X', 'LEFT', 0).scores_for(b) == [50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0]
+
+# 1-play lookahead ziet een manier om te winnen
+# (als het de beurt van 'O' was!)
+assert Player('O', 'LEFT', 1).scores_for(b) == [50.0, 50.0, 50.0, 100.0, 50.0, 50.0, 50.0]
+
+# 2-ply lookahead ziet manieren om te verliezen
+# ('X' kan maar beter in kolom 3 spelen...)
+assert Player('X', 'LEFT', 2).scores_for(b) == [0.0, 0.0, 0.0, 50.0, 0.0, 0.0, 0.0]
+
+# 3-ply lookahead ziet indirecte overwinningen
+# ('X' ziet dat kolom 3 een overwinning oplevert!)
+assert Player('X', 'LEFT', 3).scores_for(b) == [0.0, 0.0, 0.0, 100.0, 0.0, 0.0, 0.0]
+
+# Bij 3-ply ziet 'O' nog geen gevaar
+# als hij in een andere kolom speelt
+assert Player('O', 'LEFT', 3).scores_for(b) == [50.0, 50.0, 50.0, 100.0, 50.0, 50.0, 50.0]
+
+# Maar bij 4-ply ziet 'O' wel het gevaar!
+# weer jammer dat het niet de beurt van 'O' is...
+assert Player('O', 'LEFT', 4).scores_for(b) == [0.0, 0.0, 0.0, 100.0, 0.0, 0.0, 0.0]
 
