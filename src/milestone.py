@@ -265,78 +265,74 @@ class Player:
     
     return 50.0
 
-  # def generate_score(self,b,col):
-  #   db = b.copy()
-    
-  #   current_player = self.ox
-  #   if self.ply == 0:
-  #     return 50.0
-  #   else:
-  #     for x in range(self.ply):
-  #       if not db.allows_move(col):
-  #         return -1.0
-  #       else:
-  #         print(f'{col}: test')
-  #         if current_player == self.ox:
-  #           db.add_move(col, self.ox)
-  #         else:
-  #           db.add_move(col,self.opp_ch())
-  #         current_player = self.opp_ch()
-  #         score = self.score_board(db)
-  #         print(score)
-  #     for x in range(self.ply):
-  #       db.del_move(col)
-  #     print(f'returning score:{score}')
-  #     return score
-  #     # for x in range(self.ply):
-  #     #   db.add_move(col, self.ox)
-  #     #   scores[col] = self.score_board(db)
-  #     # for x in range(self.ply): # moves made being removed
-  #     #   db.del_move(col)
+  def tiebreak_move(self, scores):
+    """
+    Return the best move based on the strategy 'LEFT'  of 'RIGHT' using scores
+    If there is only one high number return that index
+    """ 
+    # Lijst is leeg
+    if scores == [] or scores is None:
+      return 0
 
-  # def scores_for(self, b):
-  #   scores = [50.0] * b.width
-  #   op = Player(self.opp_ch(), self.tbt, self.ply)
-  #   for col in range(b.width):
-  #     # op_scores = op.generate_score(col)
-  #     scores[col] = self.generate_score(b,col)
+    # Check of er maar 1 hoge score is
+    high = max(scores)
+    temp_scores = list(scores)
 
-  #   return scores
+    temp_scores.remove(high)
+    # High is enigste in de lijst
+    if not high in temp_scores:
+      return scores.index(high)
 
-  def generate_score(self, db, col, ply, ox):
-    print(f'current_col:{col}')
-    if not db.allows_move(col):
-      return -1.0
-    elif db.wins_for(self.ox):
-      return 100.0
-    elif db.wins_for(self.opp_ch()):
-      return 0.0
-    elif ply == 0:
-      return 50.0
+    # Pak het midden
+    mid = len(scores)// 2
+    # Zet begin waarde high op midden
+    high = scores[mid]
+    # Zet begin waarde best_index op het midden
+    best_index = mid
+
+    # Kolom met hoogste waarde voor 'LEFT'
+    if self.tbt == 'LEFT':
+      high = max(scores[:mid+1])
+      best_index = scores.index(high)
+    # Kolom met hoogste waarde voor 'LEFT'
     else:
-      db.add_move(col, ox)
-      print(db)
-      # ox = self.opp_ch()
-      return self.generate_score(db, col, ply-1, ox)
+      high = max(scores[mid:])
+      # Loop through list reverse and get the first occurence of high. 
+      # Because best_index is used in the loop it doenst need to bee asigned anymore
+      for best_index in range(len(scores)-1,mid,-1):
+          if scores[best_index] == high:
+              break
+      
+    return best_index
+
   def scores_for(self, b):
+    """
+    Returns a list with the same amount of elements as the board's width.
+    This list contains the moves it considers to be the best based on the amount of look ahead (self.ply)
+    """
     scores = [50.0] * b.width
-    op_scores = [50.0] * b.width
-    ply = self.ply
-    op = None
-    if self.ply > 1:
-      op = Player(self.opp_ch(), self.tbt, self.ply)
-    for col in range(b.width):
+    
+    for x in range(b.width):
       db = b.copy()
-      scores[col] = self.generate_score(db, col, ply, self.ox)
-      op_scores[col] = self.generate_score(db, col, ply, op.ox)
-      print(scores)
-      print(op_scores)
+      if not db.allows_move(x):
+        scores[x] = -1.0
+      elif db.wins_for(self.ox):
+        scores[x] = 100.0
+      elif db.wins_for(self.opp_ch()):
+        scores[x] = 0.0
+      if self.ply == 0:
+        scores[x] = 50.0
+      elif self.ply > 0:
+        db.add_move(x, self.ox)
+        if db.wins_for(self.ox):
+          scores[x] = 100.0
+        else:
+          op = Player(self.opp_ch(), self.tbt, self.ply-1)
+          op_scores = op.scores_for(db)
+          op_choice = op.tiebreak_move(op_scores)
+          scores[x] = 100.0 - op_scores[op_choice]
+        db.del_move(x)
     return scores
-      
-
-
-
-      
 
 
 # opp_sh tests
@@ -354,5 +350,29 @@ assert Player('O', 'LEFT', 0).score_board(b) == 0.0
 assert Player('O', 'LEFT', 0).score_board(Board(7, 6)) == 50.0
 
 #scores_for
-b = Board(7,6)
+b = Board(7, 6)
 b.set_board('1211244445')
+print(b)
+
+# 0-ply lookahead ziet geen bedreigingen
+assert Player('X', 'LEFT', 0).scores_for(b) == [50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0]
+
+# 1-play lookahead ziet een manier om te winnen
+# (als het de beurt van 'O' was!)
+assert Player('O', 'LEFT', 1).scores_for(b) == [50.0, 50.0, 50.0, 100.0, 50.0, 50.0, 50.0]
+
+# 2-ply lookahead ziet manieren om te verliezen
+# ('X' kan maar beter in kolom 3 spelen...)
+assert Player('X', 'LEFT', 2).scores_for(b) == [0.0, 0.0, 0.0, 50.0, 0.0, 0.0, 0.0]
+
+# 3-ply lookahead ziet indirecte overwinningen
+# ('X' ziet dat kolom 3 een overwinning oplevert!)
+assert Player('X', 'LEFT', 3).scores_for(b) == [0.0, 0.0, 0.0, 100.0, 0.0, 0.0, 0.0]
+
+# Bij 3-ply ziet 'O' nog geen gevaar
+# als hij in een andere kolom speelt
+assert Player('O', 'LEFT', 3).scores_for(b) == [50.0, 50.0, 50.0, 100.0, 50.0, 50.0, 50.0]
+
+# Maar bij 4-ply ziet 'O' wel het gevaar!
+# weer jammer dat het niet de beurt van 'O' is...
+assert Player('O', 'LEFT', 4).scores_for(b) == [0.0, 0.0, 0.0, 100.0, 0.0, 0.0, 0.0]
