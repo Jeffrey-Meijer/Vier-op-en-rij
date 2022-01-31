@@ -294,14 +294,23 @@ class Player:
       high = max(scores[:mid+1])
       best_index = scores.index(high)
     # Kolom met hoogste waarde voor 'LEFT'
-    else:
+    elif self.tbt == 'RIGHT':
       high = max(scores[mid:])
       # Loop through list reverse and get the first occurence of high. 
       # Because best_index is used in the loop it doenst need to bee asigned anymore
       for best_index in range(len(scores)-1,mid,-1):
           if scores[best_index] == high:
               break
-      
+    else:
+      # tbt = random
+      all_highs = []
+      for n in range(len(scores)):
+        if scores[n] == max(scores):
+          all_highs += [n]
+
+      import random
+      best_index = random.choice(all_highs)
+
     return best_index
 
   def scores_for(self, b):
@@ -353,16 +362,21 @@ b = Board(7, 6)
 b.set_board('01020351515')
 print(b)
 p_left = Player('X', 'LEFT', 0)
-p_right = Player('O','RIGHT',0)
+p_right = Player('O', 'RIGHT', 0)
+p_random = Player('O', 'RANDOM', 0)
 
-# Scores voor 'X'
-scores_x = [100,50,50,50,50,100,50]
+# Scores voor left
+scores_l = [100,50,50,50,50,100,50]
 
-# Scores voor 'O'
-scores_o = [50, 100, 50, 50, 100, 50, 50]
+# Scores voor right
+scores_r = [50, 100, 50, 50, 100, 50, 50]
 
-assert p_left.tiebreak_move(scores_x) == 0 or 5
-assert p_right.tiebreak_move(scores_o) == 4 or 6
+# Scores voor random
+scores_r = [50, 100, 100, 50, 100, 50, 100]
+
+assert p_left.tiebreak_move(scores_l) == 0 or 5
+assert p_right.tiebreak_move(scores_r) == 4 or 6
+print(f"Random strategy result. column chosen was: {p_random.tiebreak_move(scores_r)}")
 
 # scores_for tests
 print("Scores_for tests")
