@@ -200,13 +200,14 @@ class Board:
       Flips the values of the entire board, this flips each row.
       """
       self.data.reverse()
-
+      print('rows flipped')
     def flip_columns(self):
       """
       Flips the values of the entire row, this flips the data inside row
       """
       for row in self.data:
         row.reverse()
+      print('columns flipped')
 
     def play_game(self,px,po,variation:bool = False):
       """Play a game of connect four. Players can be human or AI"""
@@ -534,3 +535,22 @@ px = Player('X', 'LEFT', 3)
 po = Player('O', 'LEFT', 2)
 b = Board(7, 6)
 b.play_game(px, po)
+
+# test for play_game variation
+print("test play_game variation")
+px = Player('X', 'LEFT', 0)
+po = Player('O', 'LEFT', 0)
+b = Board(7, 6)
+b.play_game(px, po, True)
+
+px = Player('X', 'LEFT', 1)
+po = Player('O', 'LEFT', 1)
+b = Board(7, 6)
+b.play_game(px, po, True)
+
+px = Player('X', 'LEFT', 3)
+po = Player('O', 'LEFT', 2)
+b = Board(7, 6)
+b.play_game(px, po, True)
+
+
