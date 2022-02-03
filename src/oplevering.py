@@ -530,5 +530,7 @@ po = Player('O', 'LEFT', 1)
 b = Board(7, 6)
 b.play_game(px, po)
 
-px = Player('X', 
+px = Player('X', 'LEFT', 3)
+po = Player('O', 'LEFT', 2)
+b = Board(7, 6)
 b.play_game(px, po)
