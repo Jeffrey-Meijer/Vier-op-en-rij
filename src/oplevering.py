@@ -1,5 +1,5 @@
 from sqlalchemy import true
-
+import random
 
 class Board:
     """A data type representing a Connect-4 board
@@ -195,7 +195,21 @@ class Board:
         print(self)
         print('Gelijkspel, geen winnaar!')
 
-    def play_game(self,px,po):
+    def flip_rows(self):
+      """
+      Flips the values of the entire board, this flips each row.
+      """
+      self.data.reverse()
+      print('rows flipped')
+    def flip_columns(self):
+      """
+      Flips the values of the entire row, this flips the data inside row
+      """
+      for row in self.data:
+        row.reverse()
+      print('columns flipped')
+
+    def play_game(self,px,po,variation:bool = False):
       """Play a game of connect four. Players can be human or AI"""
       turn: Player = px
       human_piece = ''
@@ -248,8 +262,29 @@ class Board:
           turn = po
         else:
           turn = px
+
+        #if players want varitation option
+        # Varitation enables flipping of columns and board based on a certain chance starting both at 50
+        # Each chance goes up bij 5 everytime it doesn't occur up until 100 and resets to 50 when it does occur
+        if variation:
+          column_flip_chance = 50
+          rows_flip_chance = 50
+
+          if random.randint(0, 100) <= column_flip_chance:
+            self.flip_columns()
+            column_flip_chance = 50
+          else:
+            column_flip_chance += 5
+            if column_flip_chance > 100:
+              column_flip_chance = 100
           
-        
+          if random.randint(0, 100) <= rows_flip_chance:
+            self.flip_rows()
+            rows_flip_chance = 50
+          else:
+            rows_flip_chance += 5
+            if rows_flip_chance > 100:
+              rows_flip_chance = 100
 
 def in_a_row_n_southeast(ch, r_start, c_start, a, n):
   """
@@ -361,7 +396,6 @@ class Player:
         if scores[n] == max(scores):
           all_highs += [n]
 
-      import random
       best_index = random.choice(all_highs)
 
     return best_index
@@ -501,3 +535,22 @@ px = Player('X', 'LEFT', 3)
 po = Player('O', 'LEFT', 2)
 b = Board(7, 6)
 b.play_game(px, po)
+
+# test for play_game variation
+print("test play_game variation")
+px = Player('X', 'LEFT', 0)
+po = Player('O', 'LEFT', 0)
+b = Board(7, 6)
+b.play_game(px, po, True)
+
+px = Player('X', 'LEFT', 1)
+po = Player('O', 'LEFT', 1)
+b = Board(7, 6)
+b.play_game(px, po, True)
+
+px = Player('X', 'LEFT', 3)
+po = Player('O', 'LEFT', 2)
+b = Board(7, 6)
+b.play_game(px, po, True)
+
+
