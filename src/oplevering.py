@@ -1,3 +1,6 @@
+from sqlalchemy import true
+
+
 class Board:
     """A data type representing a Connect-4 board
        with an arbitrary number of rows and columns.
@@ -192,6 +195,62 @@ class Board:
         print(self)
         print('Gelijkspel, geen winnaar!')
 
+    def play_game(self,px,po):
+      """Play a game of connect four. Players can be human or AI"""
+      turn: Player = px
+      human_piece = ''
+      if px == 'human':
+        human_piece ='X'
+      else:
+        human_piece = 'O'
+
+      while True:
+        # print board
+        print(self)
+        #check win
+        if px == 'human':
+          if self.wins_for(human_piece):
+            print("Speler human heeft gewonnen!")
+            return
+        else:
+          if self.wins_for(px.ox):
+            print("Speler px wint!")
+            return
+
+        if po == 'human':
+          if self.wins_for(human_piece):
+            print("Speler human heeft gewonnen!")
+            return
+        else:
+          if self.wins_for(po.ox):
+            print("Speler po wint!")
+            return
+
+        # with human player
+        if turn == 'human':
+          move = 0
+          while True:
+            move = int(input(f"Doe een zet! (0 - {self.width-1}):"))
+
+            if self.allows_move(move):
+              break
+            else:
+              print("Zet niet geldig!\n Probeer opnieuw.")
+
+          self.add_move(move,human_piece)
+          # AI player
+        else:
+          ai_move = turn.next_move(self)
+          self.add_move(ai_move, turn.ox)
+
+        # switch turn
+        if turn == px:
+          turn = po
+        else:
+          turn = px
+          
+        
+
 def in_a_row_n_southeast(ch, r_start, c_start, a, n):
   """
   Checks if there are n amount of pieces in a row on the SOUTH_EAST side
@@ -268,7 +327,7 @@ class Player:
     """
     Return the best move based on the strategy 'LEFT'  of 'RIGHT' using scores
     If there is only one high number return that index
-    """ 
+    """
     # Lijst is leeg
     if scores == [] or scores is None:
       return 0
@@ -283,7 +342,7 @@ class Player:
       return scores.index(high)
 
     # Pak het midden
-    mid = len(scores)// 2
+    mid = len(scores) // 2
     # Zet begin waarde high op midden
     high = scores[mid]
     # Zet begin waarde best_index op het midden
@@ -293,15 +352,24 @@ class Player:
     if self.tbt == 'LEFT':
       high = max(scores[:mid+1])
       best_index = scores.index(high)
-    # Kolom met hoogste waarde voor 'LEFT'
-    else:
+    # Kolom met hoogste waarde voor 'RIGHT'
+    elif self.tbt == 'RIGHT':
       high = max(scores[mid:])
-      # Loop through list reverse and get the first occurence of high. 
-      # Because best_index is used in the loop it doenst need to bee asigned anymore
-      for best_index in range(len(scores)-1,mid,-1):
+      # Loop through list reverse and get the first occurence of high.
+      # Because best_index is used in the loop it doenst need to be asigned anymore
+      for best_index in range(len(scores)-1, mid, -1):
           if scores[best_index] == high:
               break
-      
+    else:
+      # tbt = random
+      all_highs = []
+      for n in range(len(scores)):
+        if scores[n] == max(scores):
+          all_highs += [n]
+
+      import random
+      best_index = random.choice(all_highs)
+
     return best_index
 
   def scores_for(self, b):
@@ -319,7 +387,7 @@ class Player:
         scores[x] = 100.0
       elif db.wins_for(self.opp_ch()):
         scores[x] = 0.0
-      if self.ply == 0:
+      elif self.ply == 0:
         scores[x] = 50.0
       elif self.ply > 0:
         db.add_move(x, self.ox)
@@ -422,3 +490,18 @@ assert Player('X', 'RIGHT', 2).next_move(b) == 3
 # als er maar één beste zet is...
 assert Player('X', 'RANDOM', 2).next_move(b) == 3
 
+# test for play_game
+px = Player('X', 'LEFT', 0)
+po = Player('O', 'LEFT', 0)
+b = Board(7, 6)
+b.play_game(px, po)
+
+px = Player('X', 'LEFT', 1)
+po = Player('O', 'LEFT', 1)
+b = Board(7, 6)
+b.play_game(px, po)
+
+px = Player('X', 'LEFT', 3)
+po = Player('O', 'LEFT', 2)
+b = Board(7, 6)
+b.play_game(px, po)
