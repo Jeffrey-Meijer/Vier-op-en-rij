@@ -1,5 +1,5 @@
 from sqlalchemy import true
-
+import random
 
 class Board:
     """A data type representing a Connect-4 board
@@ -248,7 +248,6 @@ class Board:
           turn = po
         else:
           turn = px
-          
         
 
 def in_a_row_n_southeast(ch, r_start, c_start, a, n):
@@ -361,7 +360,6 @@ class Player:
         if scores[n] == max(scores):
           all_highs += [n]
 
-      import random
       best_index = random.choice(all_highs)
 
     return best_index
