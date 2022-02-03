@@ -485,6 +485,8 @@ assert Player('X', 'RIGHT', 2).next_move(b) == 3
 assert Player('X', 'RANDOM', 2).next_move(b) == 3
 
 # test for play_game
+print("Test play_game")
+
 px = Player('X', 'LEFT', 0)
 po = Player('O', 'LEFT', 0)
 b = Board(7, 6)
