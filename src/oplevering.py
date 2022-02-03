@@ -195,7 +195,7 @@ class Board:
         print(self)
         print('Gelijkspel, geen winnaar!')
 
-    def play_game(self,px,po):
+    def play_game(self,px,po,variation:bool):
       """Play a game of connect four. Players can be human or AI"""
       turn: Player = px
       human_piece = ''
@@ -248,7 +248,27 @@ class Board:
           turn = po
         else:
           turn = px
-        
+
+        #if players want varitation option
+        if variation:
+          column_flip_chance = 50
+          rows_flip_chance = 50
+
+          if random.randint(0, 100) <= column_flip_chance:
+            self.flip_columns()
+            column_flip_chance = 50
+          else:
+            column_flip_chance += 5
+            if column_flip_chance > 100:
+              column_flip_chance = 100
+          
+          if random.randint(0, 100) <= rows_flip_chance:
+            self.flip_rows()
+            rows_flip_chance = 50
+          else:
+            rows_flip_chance += 5
+            if rows_flip_chance > 100:
+              rows_flip_chance = 100
 
 def in_a_row_n_southeast(ch, r_start, c_start, a, n):
   """
