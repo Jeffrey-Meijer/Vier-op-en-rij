@@ -208,7 +208,7 @@ class Board:
       for row in self.data:
         row.reverse()
 
-    def play_game(self,px,po):
+    def play_game(self,px,po,variation:bool):
       """Play a game of connect four. Players can be human or AI"""
       turn: Player = px
       human_piece = ''
@@ -261,7 +261,29 @@ class Board:
           turn = po
         else:
           turn = px
-        
+
+        #if players want varitation option
+        # Varitation enables flipping of columns and board based on a certain chance starting both at 50
+        # Each chance goes up bij 5 everytime it doesn't occur up until 100 and resets to 50 when it does occur
+        if variation:
+          column_flip_chance = 50
+          rows_flip_chance = 50
+
+          if random.randint(0, 100) <= column_flip_chance:
+            self.flip_columns()
+            column_flip_chance = 50
+          else:
+            column_flip_chance += 5
+            if column_flip_chance > 100:
+              column_flip_chance = 100
+          
+          if random.randint(0, 100) <= rows_flip_chance:
+            self.flip_rows()
+            rows_flip_chance = 50
+          else:
+            rows_flip_chance += 5
+            if rows_flip_chance > 100:
+              rows_flip_chance = 100
 
 def in_a_row_n_southeast(ch, r_start, c_start, a, n):
   """
@@ -508,7 +530,5 @@ po = Player('O', 'LEFT', 1)
 b = Board(7, 6)
 b.play_game(px, po)
 
-px = Player('X', 'LEFT', 3)
-po = Player('O', 'LEFT', 2)
-b = Board(7, 6)
+px = Player('X', 
 b.play_game(px, po)
