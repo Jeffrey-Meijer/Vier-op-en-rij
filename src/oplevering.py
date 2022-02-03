@@ -250,6 +250,8 @@ class Board:
           turn = px
 
         #if players want varitation option
+        # Varitation enables flipping of columns and board based on a certain chance starting both at 50
+        # Each chance goes up bij 5 everytime it doesn't occur up until 100 and resets to 50 when it does occur
         if variation:
           column_flip_chance = 50
           rows_flip_chance = 50
