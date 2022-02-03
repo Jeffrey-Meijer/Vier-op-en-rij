@@ -195,7 +195,7 @@ class Board:
         print(self)
         print('Gelijkspel, geen winnaar!')
 
-    def flip_row(self):
+    def flip_rows(self):
       """
       Flips the values of the entire board, this flips each row.
       """
@@ -208,7 +208,7 @@ class Board:
       for row in self.data:
         row.reverse()
 
-    def play_game(self,px,po,variation:bool):
+    def play_game(self,px,po,variation:bool = False):
       """Play a game of connect four. Players can be human or AI"""
       turn: Player = px
       human_piece = ''
