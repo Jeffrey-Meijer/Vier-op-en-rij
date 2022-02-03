@@ -341,23 +341,17 @@ class Player:
     if not high in temp_scores:
       return scores.index(high)
 
-    # Pak het midden
-    mid = len(scores) // 2
-    # Zet begin waarde high op midden
-    high = scores[mid]
-    # Zet begin waarde best_index op het midden
-    best_index = mid
-
+    high = max(scores)
     # Kolom met hoogste waarde voor 'LEFT'
     if self.tbt == 'LEFT':
-      high = max(scores[:mid+1])
-      best_index = scores.index(high)
+      for best_index in range(len(scores)):
+          if scores[best_index] == high:
+              break
     # Kolom met hoogste waarde voor 'RIGHT'
     elif self.tbt == 'RIGHT':
-      high = max(scores[mid:])
       # Loop through list reverse and get the first occurence of high.
       # Because best_index is used in the loop it doenst need to be asigned anymore
-      for best_index in range(len(scores)-1, mid, -1):
+      for best_index in range(len(scores)-1, 0, -1):
           if scores[best_index] == high:
               break
     else:
