@@ -18,6 +18,10 @@ als de AI of de speler wint dan stopt het spel. Is het spel nog niet klaar? dan 
 
 Dat waren de functies die wij hebben gemaakt voor de normale vier op een rij project.
 
+Tijdens het maken van deze functies kwamen we bij het testen er achter dat tiebreaker_move niet goed werkte.
+De functie begon vanuit het midden en keek alleen naar de helft van de strategie, dus links of rechts. waardoor het spel vastliep als links of recht helemaal vol was.
+Om dit op te lossen hebben we de functie aan gepast zodat de functie de hele scores lijst bekijkt en dan op basis van de strategie de eerst hoogste waarde gebruikt die de for-loop tegenkomt. Hierdoor zal er altijd een waarde terug komen ook als links of rechts van het veld vol zit.
+
 Nu hebben wij ook nog voor een variatie gekozen die als volgt werkt:
 Elke keer dat er een zet wordt gedaan is er een kans dat de kolommen en/of de rijen compleet flippen.
 Elke keer dat een flip niet wordt gedaan gaat de kans met 5% omhoog om de kans dus elke keer groter te maken.
