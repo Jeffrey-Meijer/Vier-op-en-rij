@@ -1,0 +1,52 @@
+Deze 2 weken zijn Mirco en ik bezig geweest met het afmaken van onze implementatie van kunstmatige intelligentie voor vier op een rij.
+Wij hebben gekeken naar welke uitbreiding(en) wij wouden gaan maken en zijn uiteindelijk gegaan voor een variatie op vier op een rij
+waarvan wij denken dat het best wel interessant kan uitspelen.
+
+Voor deze week hebben wij de volgende functies gemaakt voor het afmaken van de normale vier op een rij project:
+
+Functie next_move(self,b): (Player class)
+Deze functie is een wrapper functie de de functies "scores_for()" en "tiebreak_move()" gebruikt om de volgende
+zet te bepalen.
+
+Functie play_game(self, px, po): (Board class)
+Deze functie start een ronde van vier op een rij.
+Er kan gekozen worden om met alleen AI's te spelen door px en po te vullen met een object van de Player class
+of als px en/of po de string 'human' bevat dan kun je zelf spelen.
+
+Deze functie zorgt er dus voor dat het spel begint en dat de AI of de speler zijn of haar zet kan zetten,
+als de AI of de speler wint dan stopt het spel. Is het spel nog niet klaar? dan switched hij van turn en kan de volgende een zet doen.
+
+Dat waren de functies die wij hebben gemaakt voor de normale vier op een rij project.
+
+Nu hebben wij ook nog voor een variatie gekozen die als volgt werkt:
+Elke keer dat er een zet wordt gedaan is er een kans dat de kolommen en/of de rijen compleet flippen.
+Elke keer dat een flip niet wordt gedaan gaat de kans met 5% omhoog om de kans dus elke keer groter te maken.
+
+Voor deze variatie hebben wij de volgende functies aangemaakt of aangepast:
+
+Functie flip_rows(self): (Board class)
+Flipt zoals de functie al zegt alle rijen.
+De onderste rij van het bord wordt de eerste rij en zo gaat dat maar door.
+
+Functie flip_columns(self): (Board class)
+Flipt alle kolommen met elkaar.
+De laatste kolom wordt de eerste kolom en dit gaat zo maar door.
+
+Functie play_game(self, px, po, variation): (Board class)
+De play_game functie is zo aangepast dat deze nu ook een boolean kan krijgen die zegt of het een variatie spel moet worden of niet.
+De standaard value van varation staat op False, zo hoef je alleen maar de variabel aan te geven als je ook echt met de variatie wilt spelen.
+
+
+Om het spel te spelen doe je het volgende:
+1. Start oplevering.py op in ipython, deze gaat dan door de asserts heen.
+2. Maak een nieuw bord aan met b = Board(7,6) (variabelen mogen worden veranderd)
+3. Als je nieuwe spelers wilt aanmaken doe je dat zo:
+   px = Player('X', 'LEFT', 3)  
+   po = Player('O', 'LEFT', 3)
+
+   LEFT kun je veranderen met RIGHT of RANDOM en 3 kun je zelf kiezen, hoe hoger het getal is, hoe verder hij vooruit kijkt
+
+  Als je zelf wilt spelen kan dat als volgt:
+  px = 'human' en/of po = 'human'
+
+4. Start het spel met b.play_game(px, po) (Dit is zonder variatie) of b.play_game(px,po,True) (Dit is met variatie)
